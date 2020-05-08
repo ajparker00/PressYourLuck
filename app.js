@@ -33,9 +33,12 @@ document.querySelector('.btn-roll').addEventListener('click', function () {
       document.querySelector(
         '#current-' + activePlayer
       ).textContent = roundScore;
+
+      // Check if player won the game
+      isWinner(roundScore);
     } else {
       //Next player
-      nextPlayer();
+      setTimeout(nextPlayer, 500);
     }
   }
 });
@@ -64,12 +67,46 @@ document.querySelector('.btn-hold').addEventListener('click', function () {
         .querySelector('.player-' + activePlayer + '-panel')
         .classList.remove('active');
       gamePlaying = false;
+      isWinner();
     } else {
       //Next player
-      nextPlayer();
+      setTimeout(nextPlayer, 500);
     }
   }
 });
+
+function isWinner(roundScore) {
+  if (!roundScore) {
+    roundScore = 0;
+  }
+
+  var input = parseInt(document.querySelector('.final-score').value);
+  var winningScore;
+
+  // Undefined, 0, null or "" are COERCED to false
+  // Anything else is COERCED to true
+  if (input && !isNaN(input)) {
+    winningScore = input;
+  } else {
+    winningScore = 10;
+  }
+
+  // Check if player won the game
+  if (scores[activePlayer] + roundScore >= winningScore) {
+    document.querySelector('#name-' + activePlayer).textContent = 'Winner!';
+    document.getElementById('dice-1').style.display = 'none';
+    // document.getElementById('dice-2').style.display = 'none';
+    document
+      .querySelector('.player-' + activePlayer + '-panel')
+      .classList.add('winner');
+    document
+      .querySelector('.player-' + activePlayer + '-panel')
+      .classList.remove('active');
+    document.querySelector('.btn-roll').style.display = 'none'; // Remove the ROLL btn
+    document.querySelector('.btn-hold').style.display = 'none'; // Remove the HOLD btn
+    gamePlaying = false;
+  }
+}
 
 function nextPlayer() {
   //Next player
